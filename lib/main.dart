@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:note_aching/src/noteaching/view/home_view.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:note_aching/src/noteaching/view/home_view.dart';
 import 'package:note_aching/src/util/app_theme.dart';
 import 'firebase_options.dart';
 
@@ -17,14 +17,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: light,
-      darkTheme: dark,
+      theme: AppTheme.lightTheme,
       home: const HomeView(),
-      // routes: {
-      //   "/": (context) => const HomeView(),
-      //   "/spellCheck": (context) => const SpellCheck(),
-      //   "/checkList": (context) => const CheckList(),
-      // },
     );
   }
 }
