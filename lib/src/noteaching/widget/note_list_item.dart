@@ -1,6 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:note_aching/src/model/note_model.dart';
-import 'package:note_aching/src/util/firebase_service.dart';
 
 class NoteListItem extends StatelessWidget {
   final NoteModel note;
@@ -16,9 +16,12 @@ class NoteListItem extends StatelessWidget {
       trailing: IconButton(
         icon: const Icon(Icons.delete),
         onPressed: () async {
-          final firebaseService = FirebaseService();
-          await firebaseService.deleteNote(note.id);
-          onDelete();
+          // Delete note logic
+          await FirebaseFirestore.instance
+              .collection('notes')
+              .doc(note.id)
+              .delete();
+          onDelete(); // Call onDelete to refresh the list after deletion
         },
       ),
     );
