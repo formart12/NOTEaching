@@ -14,7 +14,7 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 3, // Three tabs for Home, Checklist, and Spell Check
       child: Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -23,22 +23,17 @@ class _HomeViewState extends State<HomeView> {
           ),
           bottom: const TabBar(
             tabs: [
-              Tab(text: 'Home'),
-              Tab(text: 'Checklist'),
-              Tab(text: 'Spell Check'),
+              Tab(text: 'Home'), // Home Tab
+              Tab(text: 'Checklist'), // Checklist Tab
+              Tab(text: 'Spell Check'), // Spell Check Tab
             ],
           ),
         ),
         body: const TabBarView(
           children: [
-            Stack(
-              children: [
-                Center(child: Text("메모를 작성해주세요.")),
-                HomeScreen(),
-              ],
-            ),
-            ChecklistScreen(),
-            SpellCheckScreen(),
+            HomeScreen(), // First tab: HomeScreen
+            ChecklistScreen(), // Second tab: ChecklistScreen
+            SpellCheckScreen(), // Third tab: SpellCheckScreen
           ],
         ),
       ),

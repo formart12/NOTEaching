@@ -50,19 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCTZSAIH4d_-jkl9VRLNGm8SgsBMMjlu60',
-    appId: '1:1066096250494:android:0748fdaf37dfb55768522f',
-    messagingSenderId: '1066096250494',
-    projectId: 'fir-storage-example-28287',
-    storageBucket: 'fir-storage-example-28287.firebasestorage.app',
+    apiKey: 'AIzaSyCEYUiYQplRo-NeFzjDKxMgdpsRK-Gu0I0',
+    appId: '1:523899637442:android:80d04fdd3e55640d7b755b',
+    messagingSenderId: '523899637442',
+    projectId: 'noteaching-f5b68',
+    storageBucket: 'noteaching-f5b68.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyACsVh9WK-7X2esJzBHsmT7zhj4wUnxw-8',
-    appId: '1:1066096250494:ios:7ab8b115582cf5e468522f',
-    messagingSenderId: '1066096250494',
-    projectId: 'fir-storage-example-28287',
-    storageBucket: 'fir-storage-example-28287.firebasestorage.app',
+    apiKey: 'AIzaSyCEGHmh_5r4kKukGZMJjDGWmaF9v9EYmOQ',
+    appId: '1:523899637442:ios:b93faa49b1474a4d7b755b',
+    messagingSenderId: '523899637442',
+    projectId: 'noteaching-f5b68',
+    storageBucket: 'noteaching-f5b68.firebasestorage.app',
     iosBundleId: 'com.example.noteAching',
   );
+
 }

@@ -14,7 +14,7 @@ class HomeTextField extends StatelessWidget {
           await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const AddNoteScreen(),
+              builder: (context) => const AddNoteView(),
             ),
           );
           setState(() {}); // HomeScreen에서 데이터 갱신
