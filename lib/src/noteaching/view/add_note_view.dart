@@ -3,7 +3,9 @@ import 'package:note_aching/src/model/note_model.dart';
 import 'package:note_aching/src/util/firebase_service.dart';
 
 class AddNoteView extends StatefulWidget {
-  const AddNoteView({super.key});
+  final Note? existingNote; // To handle editing
+
+  const AddNoteView({super.key, this.existingNote});
 
   @override
   _AddNoteViewState createState() => _AddNoteViewState();
@@ -12,6 +14,16 @@ class AddNoteView extends StatefulWidget {
 class _AddNoteViewState extends State<AddNoteView> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Pre-fill text fields if editing
+    if (widget.existingNote != null) {
+      _titleController.text = widget.existingNote!.title;
+      _contentController.text = widget.existingNote!.content;
+    }
+  }
 
   Future<void> _saveNote() async {
     if (_titleController.text.isEmpty || _contentController.text.isEmpty) {
@@ -22,13 +34,20 @@ class _AddNoteViewState extends State<AddNoteView> {
     }
 
     final note = Note(
+      id: widget.existingNote?.id ?? '', // Use existing ID if editing
       title: _titleController.text,
       content: _contentController.text,
       date: DateTime.now(),
     );
 
     try {
-      await FirebaseService().saveNote(note);
+      if (widget.existingNote != null) {
+        // Update existing note
+        await FirebaseService().updateNote(note.id, note);
+      } else {
+        // Save new note
+        await FirebaseService().saveNote(note);
+      }
       Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -40,7 +59,9 @@ class _AddNoteViewState extends State<AddNoteView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('새 메모')),
+      appBar: AppBar(
+        title: Text(widget.existingNote != null ? '메모 수정' : '새 메모'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -48,16 +69,24 @@ class _AddNoteViewState extends State<AddNoteView> {
             TextField(
               controller: _titleController,
               decoration: const InputDecoration(labelText: '제목'),
+              maxLines: null,
+              keyboardType: TextInputType.text,
             ),
-            TextField(
-              controller: _contentController,
-              decoration: const InputDecoration(labelText: '내용'),
-              maxLines: null, // Allow multiline input
+            const SizedBox(height: 16),
+            Expanded(
+              child: SingleChildScrollView(
+                child: TextField(
+                  controller: _contentController,
+                  decoration: const InputDecoration(labelText: '내용'),
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                ),
+              ),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _saveNote,
-              child: const Text('저장'),
+              child: Text(widget.existingNote != null ? '수정' : '저장'),
             ),
           ],
         ),

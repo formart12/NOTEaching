@@ -7,7 +7,15 @@ class FirebaseService {
   // Save new note
   Future<void> saveNote(Note note) async {
     try {
-      await _db.collection('notes').add(note.toJson());
+      // Add the note and get the document reference
+      DocumentReference docRef =
+          await _db.collection('notes').add(note.toJson());
+
+      // Update the note with the document ID after it is added
+      note.id = docRef.id;
+
+      // Optionally, update the note with the id to Firestore if needed
+      await docRef.update({'id': note.id});
     } catch (e) {
       throw 'Error saving note: $e';
     }

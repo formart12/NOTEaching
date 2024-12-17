@@ -16,7 +16,7 @@ class Note {
   // From JSON (Firestore data)
   factory Note.fromJson(Map<String, dynamic> json) {
     return Note(
-      id: json['id'] ?? '', // Make sure the id exists
+      id: json['id'] ?? '', // Ensure id is assigned
       title: json['title'] ?? '',
       content: json['content'] ?? '',
       date: _parseDate(json['date']),
@@ -38,7 +38,6 @@ class Note {
   // To JSON (Firestore document)
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'title': title,
       'content': content,
       'date':
