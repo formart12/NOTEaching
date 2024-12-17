@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart'; // Import Firebase
 import 'package:flutter/material.dart';
-import 'package:note_aching/src/noteaching/view/home_view.dart'; // Import HomeView
+import 'package:note_aching/src/noteaching/view/home_view.dart';
+import 'package:note_aching/src/util/app_theme.dart'; // Import HomeView
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Ensure proper initialization
@@ -15,9 +16,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'NOTEaching App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: light,
+      darkTheme: dark,
       home: const HomeView(), // Set HomeView as the starting screen
     );
   }
