@@ -2,44 +2,61 @@ import 'package:flutter/material.dart';
 import 'package:note_aching/src/model/note_model.dart';
 import 'package:note_aching/src/util/firebase_service.dart';
 
-class AddNoteScreen extends StatefulWidget {
-  const AddNoteScreen({super.key});
+class AddNoteView extends StatefulWidget {
+  final Note? existingNote;
+
+  const AddNoteView({super.key, this.existingNote});
 
   @override
-  _AddNoteScreenState createState() => _AddNoteScreenState();
+  _AddNoteViewState createState() => _AddNoteViewState();
 }
 
-class _AddNoteScreenState extends State<AddNoteScreen> {
+class _AddNoteViewState extends State<AddNoteView> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
-  final FirebaseService _firebaseService = FirebaseService();
 
-  void _saveNote() async {
-    String title = _titleController.text.trim();
-    String content = _contentController.text.trim();
+  @override
+  void initState() {
+    super.initState();
+    if (widget.existingNote != null) {
+      _titleController.text = widget.existingNote!.title;
+      _contentController.text = widget.existingNote!.content;
+    }
+  }
 
-    if (title.isNotEmpty && content.isNotEmpty) {
-      NoteModel newNote = NoteModel(
-        id: '', // Firestore will auto-generate the ID
-        title: title,
-        content: content,
-        createdAt: DateTime.now(),
-      );
-
-      try {
-        await _firebaseService.addNote(newNote);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Note saved successfully!')),
-        );
-        Navigator.pop(context); // Go back to HomeView
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to save note')),
-        );
-      }
-    } else {
+  Future<void> _saveNote() async {
+    if (_titleController.text.isEmpty || _contentController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter both title and content')),
+        SnackBar(
+            content: Text(
+          '내용을 입력해주세요.',
+          style: Theme.of(context).textTheme.labelSmall,
+        )),
+      );
+      return;
+    }
+
+    final note = Note(
+      id: widget.existingNote?.id ?? '',
+      title: _titleController.text,
+      content: _contentController.text,
+      date: DateTime.now(),
+    );
+
+    try {
+      if (widget.existingNote != null) {
+        await FirebaseService().updateNote(note.id, note);
+      } else {
+        await FirebaseService().saveNote(note);
+      }
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(
+          '오류로 인해 저장하지 못했습니다.: $e',
+          style: Theme.of(context).textTheme.labelSmall,
+        )),
       );
     }
   }
@@ -48,28 +65,45 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Note"),
+        title: Text(
+          widget.existingNote != null ? '메모 수정' : '새 메모',
+          style: Theme.of(context).textTheme.labelSmall,
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
+              style: Theme.of(context).textTheme.bodyMedium,
               controller: _titleController,
-              decoration: const InputDecoration(labelText: 'Title'),
+              decoration: InputDecoration(
+                  hintText: '제목',
+                  hintStyle: Theme.of(context).textTheme.bodyMedium),
+              maxLines: null,
+              keyboardType: TextInputType.text,
             ),
-            TextField(
-              controller: _contentController,
-              decoration: const InputDecoration(labelText: 'Content'),
-              maxLines: 5,
+            const SizedBox(height: 16),
+            Expanded(
+              child: SingleChildScrollView(
+                child: TextField(
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  controller: _contentController,
+                  decoration: InputDecoration(
+                      hintText: '내용',
+                      hintStyle: Theme.of(context).textTheme.bodyMedium),
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                ),
+              ),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _saveNote,
-              child: const Text("Save Note",
-                  style: TextStyle(
-                    color: Colors.white,
-                  )),
+              child: Text(
+                widget.existingNote != null ? '수정' : '저장',
+                style: Theme.of(context).textTheme.labelSmall,
+              ),
             ),
           ],
         ),

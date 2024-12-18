@@ -1,32 +1,42 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class NoteModel {
+class Note {
   String id;
   String title;
   String content;
-  DateTime createdAt;
+  DateTime date;
 
-  NoteModel({
-    required this.id,
+  Note({
+    this.id = '',
     required this.title,
     required this.content,
-    required this.createdAt,
+    required this.date,
   });
 
-  factory NoteModel.fromMap(Map<String, dynamic> map, String id) {
-    return NoteModel(
-      id: id,
-      title: map['title'] ?? '',
-      content: map['content'] ?? '',
-      createdAt: (map['createdAt'] as Timestamp).toDate(),
+  factory Note.fromJson(Map<String, dynamic> json) {
+    return Note(
+      id: json['id'] ?? '',
+      title: json['title'] ?? '',
+      content: json['content'] ?? '',
+      date: _parseDate(json['date']),
     );
   }
 
-  Map<String, dynamic> toMap() {
+  static DateTime _parseDate(dynamic date) {
+    if (date is Timestamp) {
+      return date.toDate();
+    } else if (date is String) {
+      return DateTime.parse(date);
+    } else {
+      throw FormatException("Invalid date format: $date");
+    }
+  }
+
+  Map<String, dynamic> toJson() {
     return {
       'title': title,
       'content': content,
-      'createdAt': createdAt,
+      'date': Timestamp.fromDate(date),
     };
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:note_aching/src/noteaching/view/calendar_screen.dart';
 import 'package:note_aching/src/noteaching/view/check_list_screen.dart';
 import 'package:note_aching/src/noteaching/view/home_screen.dart';
-import 'package:note_aching/src/noteaching/view/spell_check_screen.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -17,28 +17,40 @@ class _HomeViewState extends State<HomeView> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(
+          title: Text(
             "NOTEaching",
-            textAlign: TextAlign.right,
+            textAlign: TextAlign.left,
+            style: Theme.of(context).textTheme.displayLarge,
           ),
-          bottom: const TabBar(
+          bottom: TabBar(
+            indicatorColor: Theme.of(context).colorScheme.tertiary,
             tabs: [
-              Tab(text: 'Home'),
-              Tab(text: 'Checklist'),
-              Tab(text: 'Spell Check'),
+              Tab(
+                child: Text(
+                  "Home",
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
+              ),
+              Tab(
+                child: Text(
+                  "CheckList",
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
+              ),
+              Tab(
+                child: Text(
+                  "calendar",
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
+              ),
             ],
           ),
         ),
         body: const TabBarView(
           children: [
-            Stack(
-              children: [
-                Center(child: Text("메모를 작성해주세요.")),
-                HomeScreen(),
-              ],
-            ),
+            HomeScreen(),
             ChecklistScreen(),
-            SpellCheckScreen(),
+            CalendarScreen(),
           ],
         ),
       ),
