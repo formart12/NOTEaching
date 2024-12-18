@@ -13,35 +13,30 @@ class Note {
     required this.date,
   });
 
-  // From JSON (Firestore data)
   factory Note.fromJson(Map<String, dynamic> json) {
     return Note(
-      id: json['id'] ?? '', // Ensure id is assigned
+      id: json['id'] ?? '',
       title: json['title'] ?? '',
       content: json['content'] ?? '',
       date: _parseDate(json['date']),
     );
   }
 
-  // Helper function to handle both String and Timestamp cases
   static DateTime _parseDate(dynamic date) {
     if (date is Timestamp) {
-      return date.toDate(); // Convert Timestamp to DateTime
+      return date.toDate();
     } else if (date is String) {
-      return DateTime.parse(
-          date); // Parse String to DateTime (if stored as String)
+      return DateTime.parse(date);
     } else {
       throw FormatException("Invalid date format: $date");
     }
   }
 
-  // To JSON (Firestore document)
   Map<String, dynamic> toJson() {
     return {
       'title': title,
       'content': content,
-      'date':
-          Timestamp.fromDate(date), // Convert DateTime to Firestore Timestamp
+      'date': Timestamp.fromDate(date),
     };
   }
 }

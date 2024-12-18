@@ -1,12 +1,12 @@
-import 'package:firebase_core/firebase_core.dart'; // Import Firebase
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:note_aching/src/noteaching/view/home_view.dart';
-import 'package:note_aching/src/util/app_theme.dart'; // Import HomeView
+import 'package:note_aching/src/util/app_theme.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // Ensure proper initialization
-  await Firebase.initializeApp(); // Initialize Firebase
-  runApp(const MyApp()); // Run the app after Firebase initialization
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       title: 'NOTEaching App',
       theme: light,
       darkTheme: dark,
-      home: const HomeView(), // Set HomeView as the starting screen
+      home: const HomeView(),
     );
   }
 }

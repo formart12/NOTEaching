@@ -3,7 +3,7 @@ import 'package:note_aching/src/model/note_model.dart';
 import 'package:note_aching/src/util/firebase_service.dart';
 
 class AddNoteView extends StatefulWidget {
-  final Note? existingNote; // To handle editing
+  final Note? existingNote;
 
   const AddNoteView({super.key, this.existingNote});
 
@@ -18,7 +18,6 @@ class _AddNoteViewState extends State<AddNoteView> {
   @override
   void initState() {
     super.initState();
-    // Pre-fill text fields if editing
     if (widget.existingNote != null) {
       _titleController.text = widget.existingNote!.title;
       _contentController.text = widget.existingNote!.content;
@@ -34,7 +33,7 @@ class _AddNoteViewState extends State<AddNoteView> {
     }
 
     final note = Note(
-      id: widget.existingNote?.id ?? '', // Use existing ID if editing
+      id: widget.existingNote?.id ?? '',
       title: _titleController.text,
       content: _contentController.text,
       date: DateTime.now(),
@@ -42,10 +41,8 @@ class _AddNoteViewState extends State<AddNoteView> {
 
     try {
       if (widget.existingNote != null) {
-        // Update existing note
         await FirebaseService().updateNote(note.id, note);
       } else {
-        // Save new note
         await FirebaseService().saveNote(note);
       }
       Navigator.pop(context);

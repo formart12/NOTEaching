@@ -9,31 +9,23 @@ class ChecklistScreen extends StatefulWidget {
 }
 
 class _ChecklistScreenState extends State<ChecklistScreen> {
-  List<String> checkLists = []; // Changed from tasks to checkLists
+  List<String> checkLists = [];
   List<bool> isChecked = [];
-  List<String> completedCheckLists =
-      []; // Changed from completedTasks to completedCheckLists
-  final TextEditingController _addCheckListController =
-      TextEditingController(); // Changed from _addTaskController
+  List<String> completedCheckLists = [];
+  final TextEditingController _addCheckListController = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Fetch checklists from Firestore
   Future<void> _fetchCheckLists() async {
-    // Changed from _fetchTasks to _fetchCheckLists
     try {
-      QuerySnapshot snapshot = await _firestore
-          .collection('checkLists')
-          .get(); // Changed from tasks to checkLists
+      QuerySnapshot snapshot = await _firestore.collection('checkLists').get();
       setState(() {
-        checkLists = snapshot.docs
-            .map((doc) => doc['checkList'] as String)
-            .toList(); // Changed from task to checkList
+        checkLists =
+            snapshot.docs.map((doc) => doc['checkList'] as String).toList();
         isChecked =
             snapshot.docs.map((doc) => doc['isChecked'] as bool).toList();
         completedCheckLists = snapshot.docs
             .where((doc) => doc['isChecked'] == true)
-            .map((doc) =>
-                doc['checkList'] as String) // Changed from task to checkList
+            .map((doc) => doc['checkList'] as String)
             .toList();
       });
     } catch (e) {
@@ -41,58 +33,49 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
     }
   }
 
-  // Add checkList to Firestore
   Future<void> _addCheckList(String checkList) async {
-    // Changed from _addTask to _addCheckList
     try {
       await _firestore.collection('checkLists').add({
-        // Changed from tasks to checkLists
-        'checkList': checkList, // Changed from task to checkList
+        'checkList': checkList,
         'isChecked': false,
       });
-      _fetchCheckLists(); // Reload checklists
-      _addCheckListController.clear(); // Changed from _addTaskController
+      _fetchCheckLists();
+      _addCheckListController.clear();
     } catch (e) {
       print("Error adding checkList: $e");
     }
   }
 
-  // Update checkList completion status in Firestore
   Future<void> _updateCheckListStatus(int index, bool value) async {
-    // Changed from _updateTaskStatus to _updateCheckListStatus
     try {
       final checkListDoc = await _firestore
-          .collection('checkLists') // Changed from tasks to checkLists
-          .where('checkList',
-              isEqualTo: checkLists[index]) // Changed from task to checkList
+          .collection('checkLists')
+          .where('checkList', isEqualTo: checkLists[index])
           .get();
       if (checkListDoc.docs.isNotEmpty) {
         await _firestore
-            .collection('checkLists') // Changed from tasks to checkLists
+            .collection('checkLists')
             .doc(checkListDoc.docs.first.id)
             .update({'isChecked': value});
-        _fetchCheckLists(); // Reload checklists
+        _fetchCheckLists();
       }
     } catch (e) {
       print("Error updating checkList status: $e");
     }
   }
 
-  // Delete checkList from Firestore
   Future<void> _deleteCheckList(int index) async {
-    // Changed from _deleteTask to _deleteCheckList
     try {
       final checkListDoc = await _firestore
-          .collection('checkLists') // Changed from tasks to checkLists
-          .where('checkList',
-              isEqualTo: checkLists[index]) // Changed from task to checkList
+          .collection('checkLists')
+          .where('checkList', isEqualTo: checkLists[index])
           .get();
       if (checkListDoc.docs.isNotEmpty) {
         await _firestore
             .collection('checkLists')
             .doc(checkListDoc.docs.first.id)
-            .delete(); // Changed from tasks to checkLists
-        _fetchCheckLists(); // Reload checklists
+            .delete();
+        _fetchCheckLists();
       }
     } catch (e) {
       print("Error deleting checkList: $e");
@@ -101,14 +84,14 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
 
   @override
   void dispose() {
-    _addCheckListController.dispose(); // Changed from _addTaskController
+    _addCheckListController.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    _fetchCheckLists(); // Fetch checklists when screen is loaded
+    _fetchCheckLists();
   }
 
   @override
@@ -128,15 +111,13 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
               children: [
                 Expanded(
                   child: TextField(
-                    controller:
-                        _addCheckListController, // Changed from _addTaskController
+                    controller: _addCheckListController,
                     decoration: const InputDecoration(
                       hintText: "+ 할일 추가",
                     ),
                     onSubmitted: (value) {
                       if (value.trim().isNotEmpty) {
-                        _addCheckList(
-                            value); // Changed from _addTask to _addCheckList
+                        _addCheckList(value);
                       }
                     },
                   ),
@@ -150,12 +131,10 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
                   ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount:
-                        checkLists.length, // Changed from tasks to checkLists
+                    itemCount: checkLists.length,
                     itemBuilder: (context, index) {
                       return Dismissible(
-                        key: Key(checkLists[
-                            index]), // Changed from tasks to checkLists
+                        key: Key(checkLists[index]),
                         background: Container(
                           color: Colors.blue,
                           alignment: Alignment.centerLeft,
@@ -164,21 +143,16 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
                         ),
                         confirmDismiss: (direction) async {
                           if (direction == DismissDirection.endToStart) {
-                            await _deleteCheckList(
-                                index); // Changed from _deleteTask to _deleteCheckList
+                            await _deleteCheckList(index);
                             return true;
                           }
                           return false;
                         },
                         child: CheckboxListTile(
-                          title: Text(checkLists[
-                              index]), // Changed from tasks to checkLists
+                          title: Text(checkLists[index]),
                           value: isChecked[index],
                           onChanged: (bool? value) async {
-                            await _updateCheckListStatus(
-                                index,
-                                value ??
-                                    false); // Changed from _updateTaskStatus to _updateCheckListStatus
+                            await _updateCheckListStatus(index, value ?? false);
                           },
                         ),
                       );
@@ -193,11 +167,9 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
                   ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: completedCheckLists
-                        .length, // Changed from completedTasks to completedCheckLists
+                    itemCount: completedCheckLists.length,
                     itemBuilder: (context, index) {
-                      return Text(completedCheckLists[
-                          index]); // Changed from completedTasks to completedCheckLists
+                      return Text(completedCheckLists[index]);
                     },
                   ),
                 ],

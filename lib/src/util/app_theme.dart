@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 ThemeData get light => ThemeData(
-    scaffoldBackgroundColor: const Color(0xffE8EEF2),
+    scaffoldBackgroundColor: const Color(0xffffffff),
     useMaterial3: false,
     textTheme: const TextTheme(
         bodyLarge: TextStyle(
-          color: Color(0xffEBEAE6),
-          fontFamily: "PartialSansKR",
+          color: Color(0xff000000),
+          fontFamily: "Pretendard",
           fontSize: 64,
           fontWeight: FontWeight.w400,
         ),
@@ -69,12 +69,12 @@ ThemeData get light => ThemeData(
           color: Color(0xffFFFFFF),
         )),
     colorScheme: const ColorScheme.light(
-        primary: Color(0xff362703),
-        secondary: Color(0xffFFB300),
-        onPrimaryContainer: Color(0xffffffff),
-        onSecondaryContainer: Color(0xffd7d7d7),
-        surfaceContainer: Color(0xff2A2A2A),
-        tertiary: Color(0xffF3F3F3)));
+        primary: Color(0xffffffff),
+        secondary: Color(0xff000000),
+        onPrimaryContainer: Color(0xff000000),
+        onSecondaryContainer: Color(0xff000000),
+        surfaceContainer: Color(0xffffffff),
+        tertiary: Color(0xff000000)));
 
 ThemeData get dark => ThemeData(
     scaffoldBackgroundColor: const Color(0xff191919),

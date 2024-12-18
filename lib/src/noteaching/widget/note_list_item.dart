@@ -25,7 +25,7 @@ class NoteListItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(8.0),
       ),
       child: Padding(
-        padding: EdgeInsets.zero, // Remove padding around entire container
+        padding: EdgeInsets.zero,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -45,15 +45,13 @@ class NoteListItem extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  // Edit and Delete Icons
                   IconButton(
                     icon: const Icon(
                       Icons.edit,
                       size: 20,
                     ),
-                    padding: EdgeInsets.zero, // No padding applied
-                    constraints:
-                        const BoxConstraints(), // Remove constraints applied by default
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -68,9 +66,8 @@ class NoteListItem extends StatelessWidget {
                       Icons.delete,
                       size: 20,
                     ),
-                    padding: EdgeInsets.zero, // No padding applied
-                    constraints:
-                        const BoxConstraints(), // Remove constraints applied by default
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
                     onPressed: () async {
                       try {
                         await FirebaseFirestore.instance
@@ -96,14 +93,12 @@ class NoteListItem extends StatelessWidget {
                 style: const TextStyle(fontSize: 14.0, color: Colors.white),
               ),
             ),
-            // Date at the bottom-right corner
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               child: Align(
                 alignment: Alignment.bottomRight,
                 child: Text(
-                  "${note.date.toLocal()}"
-                      .split(' ')[0], // Display date in "YYYY-MM-DD" format
+                  "${note.date.toLocal()}".split(' ')[0],
                   style: const TextStyle(
                     fontSize: 12.0,
                     color: Colors.grey,
