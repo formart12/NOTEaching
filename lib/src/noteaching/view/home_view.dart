@@ -17,15 +17,32 @@ class _HomeViewState extends State<HomeView> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(
+          title: Text(
             "NOTEaching",
-            textAlign: TextAlign.right,
+            textAlign: TextAlign.left,
+            style: Theme.of(context).textTheme.displayLarge,
           ),
-          bottom: const TabBar(
+          bottom: TabBar(
+            indicatorColor: Theme.of(context).colorScheme.tertiary,
             tabs: [
-              Tab(text: 'Home'),
-              Tab(text: 'Checklist'),
-              Tab(text: 'Calendar'),
+              Tab(
+                child: Text(
+                  "Home",
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
+              ),
+              Tab(
+                child: Text(
+                  "CheckList",
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
+              ),
+              Tab(
+                child: Text(
+                  "calendar",
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
+              ),
             ],
           ),
         ),

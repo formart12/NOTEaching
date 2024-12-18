@@ -19,7 +19,11 @@ class NotesListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('메모 목록')),
+      appBar: AppBar(
+          title: Text(
+        '메모 목록',
+        style: Theme.of(context).textTheme.labelSmall,
+      )),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _fetchAllNotes(),
         builder: (context, snapshot) {
@@ -27,7 +31,11 @@ class NotesListScreen extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('저장된 메모가 없습니다.'));
+            return Center(
+                child: Text(
+              '저장된 메모가 없습니다.',
+              style: Theme.of(context).textTheme.labelSmall,
+            ));
           }
           return ListView.builder(
             itemCount: snapshot.data!.length,
@@ -39,9 +47,9 @@ class NotesListScreen extends StatelessWidget {
                   style: const TextStyle(color: Colors.white),
                 ),
                 subtitle: Text(
-                  DateFormat('yyyy-MM-dd').format(DateTime.parse(note['date'])),
-                  style: const TextStyle(color: Colors.grey),
-                ),
+                    DateFormat('yyyy-MM-dd')
+                        .format(DateTime.parse(note['date'])),
+                    style: Theme.of(context).textTheme.labelSmall),
               );
             },
           );

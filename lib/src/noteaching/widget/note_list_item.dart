@@ -34,21 +34,18 @@ class NoteListItem extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  // Title
                   Expanded(
                     child: Text(
                       note.title,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
-                      ),
+                      style: Theme.of(context).textTheme.bodyMedium,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.edit,
                       size: 20,
+                      color: Theme.of(context).colorScheme.surfaceContainer,
                     ),
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
@@ -62,9 +59,10 @@ class NoteListItem extends StatelessWidget {
                     },
                   ),
                   IconButton(
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.delete,
                       size: 20,
+                      color: Theme.of(context).colorScheme.surfaceContainer,
                     ),
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
@@ -74,10 +72,10 @@ class NoteListItem extends StatelessWidget {
                             .collection('notes')
                             .doc(note.id)
                             .delete();
-                        onDelete(); // Refresh the list
+                        onDelete();
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Error deleting note: $e')),
+                          SnackBar(content: Text('삭제 에러가 발생했습니다.: $e')),
                         );
                       }
                     },
@@ -88,22 +86,15 @@ class NoteListItem extends StatelessWidget {
             // Content
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: Text(
-                note.content,
-                style: const TextStyle(fontSize: 14.0, color: Colors.white),
-              ),
+              child: Text(note.content,
+                  style: Theme.of(context).textTheme.bodySmall),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               child: Align(
                 alignment: Alignment.bottomRight,
-                child: Text(
-                  "${note.date.toLocal()}".split(' ')[0],
-                  style: const TextStyle(
-                    fontSize: 12.0,
-                    color: Colors.grey,
-                  ),
-                ),
+                child: Text("${note.date.toLocal()}".split(' ')[0],
+                    style: Theme.of(context).textTheme.bodyMedium),
               ),
             ),
           ],

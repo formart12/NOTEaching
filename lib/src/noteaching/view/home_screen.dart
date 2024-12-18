@@ -51,6 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
         onPressed: () => Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const AddNoteView()),

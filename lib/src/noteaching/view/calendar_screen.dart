@@ -32,7 +32,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
         .collection('calendar')
         .where('date', isEqualTo: _selectedDay.toIso8601String())
         .get();
-
     setState(() {
       _notes = snapshot.docs;
     });
@@ -46,7 +45,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
         'content': content,
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('메모가 저장되었습니다.')),
+        SnackBar(
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          content: Text(
+            '메모가 저장되었습니다.',
+            style: Theme.of(context).textTheme.labelSmall,
+          ),
+        ),
       );
       _fetchNotesForSelectedDay();
     }
@@ -55,7 +60,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Future<void> _deleteNote(String id) async {
     await FirebaseFirestore.instance.collection('calendar').doc(id).delete();
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('메모가 삭제되었습니다.')),
+      SnackBar(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        content: Text(
+          '메모가 삭제되었습니다.',
+          style: Theme.of(context).textTheme.labelSmall,
+        ),
+      ),
     );
     _fetchNotesForSelectedDay();
   }
@@ -66,6 +77,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      backgroundColor: Theme.of(context).colorScheme.primary,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -81,18 +93,20 @@ class _CalendarScreenState extends State<CalendarScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
+                style: Theme.of(context).textTheme.bodyMedium,
                 onChanged: (value) => title = value,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   hintText: '제목을 입력하세요.',
-                  border: OutlineInputBorder(),
+                  hintStyle: Theme.of(context).textTheme.labelSmall,
                 ),
               ),
               const SizedBox(height: 8),
               TextField(
+                style: Theme.of(context).textTheme.bodyMedium,
                 onChanged: (value) => content = value,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   hintText: '메모 내용을 입력하세요.',
-                  border: OutlineInputBorder(),
+                  hintStyle: Theme.of(context).textTheme.labelSmall,
                 ),
                 maxLines: 3,
               ),
@@ -102,13 +116,101 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   _saveNote(title, content);
                   Navigator.pop(context);
                 },
-                child: const Text('저장'),
+                child: Text(
+                  '저장',
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
               ),
             ],
           ),
         );
       },
     );
+  }
+
+  void _showEditNoteModal(
+      String noteId, String currentTitle, String currentContent) {
+    String title = currentTitle;
+    String content = currentContent;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 16,
+            right: 16,
+            top: 16,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: TextEditingController(text: title),
+                onChanged: (value) => title = value,
+                decoration: InputDecoration(
+                  hintText: '제목을 입력하세요.',
+                  hintStyle: Theme.of(context).textTheme.labelSmall,
+                ),
+                style: Theme.of(context).textTheme.labelSmall,
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: TextEditingController(text: content),
+                onChanged: (value) => content = value,
+                decoration: InputDecoration(
+                  hintText: '메모 내용을 입력하세요.',
+                  hintStyle: Theme.of(context).textTheme.labelSmall,
+                ),
+                style: Theme.of(context).textTheme.labelSmall,
+                maxLines: 3,
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  _updateNote(noteId, title, content);
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  '저장',
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _updateNote(String noteId, String title, String content) async {
+    if (title.isNotEmpty && content.isNotEmpty) {
+      await FirebaseFirestore.instance
+          .collection('calendar')
+          .doc(noteId)
+          .update({
+        'title': title,
+        'content': content,
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          content: Text(
+            '메모가 수정되었습니다.',
+            style: Theme.of(context).textTheme.labelSmall,
+          ),
+        ),
+      );
+
+      _fetchNotesForSelectedDay();
+    }
   }
 
   Widget _buildNoteItem(DocumentSnapshot note) {
@@ -118,7 +220,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final date = DateTime.parse(data['date']).toLocal();
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
+      margin: const EdgeInsets.symmetric(
+        vertical: 10.0,
+      ),
       decoration: BoxDecoration(
         border: Border.all(
           color: Colors.grey,
@@ -136,27 +240,31 @@ class _CalendarScreenState extends State<CalendarScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  // Title
                   Expanded(
                     child: Text(
                       title,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
-                      ),
+                      style: Theme.of(context).textTheme.bodyMedium,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.edit, size: 20),
+                    icon: Icon(
+                      Icons.edit,
+                      size: 20,
+                      color: Theme.of(context).colorScheme.surfaceContainer,
+                    ),
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
                     onPressed: () {
-                      // Handle edit action
+                      _showEditNoteModal(note.id, title, content);
                     },
                   ),
                   IconButton(
-                    icon: const Icon(Icons.delete, size: 20),
+                    icon: Icon(
+                      Icons.delete,
+                      size: 20,
+                      color: Theme.of(context).colorScheme.surfaceContainer,
+                    ),
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
                     onPressed: () => _deleteNote(note.id),
@@ -178,10 +286,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 alignment: Alignment.bottomRight,
                 child: Text(
                   "${date.year}년 ${date.month}월 ${date.day}일",
-                  style: const TextStyle(
-                    fontSize: 12.0,
-                    color: Colors.grey,
-                  ),
+                  style: Theme.of(context).textTheme.labelSmall,
                 ),
               ),
             ),
@@ -222,21 +327,24 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   formatButtonVisible: false,
                   titleCentered: true,
                 ),
-                calendarStyle: const CalendarStyle(
-                  todayDecoration: BoxDecoration(
+                calendarStyle: CalendarStyle(
+                  todayDecoration: const BoxDecoration(
                     color: Colors.blue,
                     shape: BoxShape.circle,
                   ),
-                  selectedDecoration: BoxDecoration(
+                  selectedDecoration: const BoxDecoration(
                     color: Colors.red,
                     shape: BoxShape.circle,
                   ),
+                  defaultTextStyle: Theme.of(context).textTheme.labelSmall!,
+                  weekendTextStyle: Theme.of(context).textTheme.bodySmall!,
+                  outsideTextStyle: Theme.of(context).textTheme.bodySmall!,
                 ),
               ),
               const SizedBox(height: 16),
               Text(
                 '선택된 날짜: ${DateFormat('yyyy년 MM월 dd일').format(_selectedDay)}',
-                style: const TextStyle(fontSize: 16),
+                style: Theme.of(context).textTheme.labelSmall,
               ),
               const SizedBox(height: 16),
               ListView.builder(
@@ -252,6 +360,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
         onPressed: _showAddNoteModal,
         child: const Icon(Icons.add),
       ),

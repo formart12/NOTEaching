@@ -27,7 +27,11 @@ class _AddNoteViewState extends State<AddNoteView> {
   Future<void> _saveNote() async {
     if (_titleController.text.isEmpty || _contentController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('내용을 입력해주세요.')),
+        SnackBar(
+            content: Text(
+          '내용을 입력해주세요.',
+          style: Theme.of(context).textTheme.labelSmall,
+        )),
       );
       return;
     }
@@ -48,7 +52,11 @@ class _AddNoteViewState extends State<AddNoteView> {
       Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('오류로 인해 저장하지 못했습니다.: $e')),
+        SnackBar(
+            content: Text(
+          '오류로 인해 저장하지 못했습니다.: $e',
+          style: Theme.of(context).textTheme.labelSmall,
+        )),
       );
     }
   }
@@ -57,15 +65,21 @@ class _AddNoteViewState extends State<AddNoteView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.existingNote != null ? '메모 수정' : '새 메모'),
+        title: Text(
+          widget.existingNote != null ? '메모 수정' : '새 메모',
+          style: Theme.of(context).textTheme.labelSmall,
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
+              style: Theme.of(context).textTheme.bodyMedium,
               controller: _titleController,
-              decoration: const InputDecoration(labelText: '제목'),
+              decoration: InputDecoration(
+                  hintText: '제목',
+                  hintStyle: Theme.of(context).textTheme.bodyMedium),
               maxLines: null,
               keyboardType: TextInputType.text,
             ),
@@ -73,8 +87,11 @@ class _AddNoteViewState extends State<AddNoteView> {
             Expanded(
               child: SingleChildScrollView(
                 child: TextField(
+                  style: Theme.of(context).textTheme.bodyMedium,
                   controller: _contentController,
-                  decoration: const InputDecoration(labelText: '내용'),
+                  decoration: InputDecoration(
+                      hintText: '내용',
+                      hintStyle: Theme.of(context).textTheme.bodyMedium),
                   maxLines: null,
                   keyboardType: TextInputType.multiline,
                 ),
@@ -83,7 +100,10 @@ class _AddNoteViewState extends State<AddNoteView> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _saveNote,
-              child: Text(widget.existingNote != null ? '수정' : '저장'),
+              child: Text(
+                widget.existingNote != null ? '수정' : '저장',
+                style: Theme.of(context).textTheme.labelSmall,
+              ),
             ),
           ],
         ),

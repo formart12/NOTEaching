@@ -29,7 +29,7 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
             .toList();
       });
     } catch (e) {
-      print("Error fetching checkLists: $e");
+      print("체크리스트 에러 발생.: $e");
     }
   }
 
@@ -102,26 +102,38 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "메모",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
+            Text("메모", style: Theme.of(context).textTheme.labelSmall),
             const SizedBox(height: 8),
             Row(
               children: [
                 Expanded(
-                  child: TextField(
-                    controller: _addCheckListController,
-                    decoration: const InputDecoration(
-                      hintText: "+ 할일 추가",
+                    child: TextField(
+                  controller: _addCheckListController,
+                  decoration: InputDecoration(
+                    hintText: "+ 할일 추가",
+                    hintStyle: Theme.of(context)
+                        .textTheme
+                        .labelSmall, // Apply theme to hint text
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.surfaceContainer,
+                      ),
                     ),
-                    onSubmitted: (value) {
-                      if (value.trim().isNotEmpty) {
-                        _addCheckList(value);
-                      }
-                    },
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.surfaceContainer,
+                      ),
+                    ),
                   ),
-                ),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium, // Apply theme to text inside TextField
+                  onSubmitted: (value) {
+                    if (value.trim().isNotEmpty) {
+                      _addCheckList(value);
+                    }
+                  },
+                )),
               ],
             ),
             const SizedBox(height: 16),
@@ -136,10 +148,11 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
                       return Dismissible(
                         key: Key(checkLists[index]),
                         background: Container(
-                          color: Colors.blue,
+                          color: Colors.red,
                           alignment: Alignment.centerLeft,
                           padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: const Icon(Icons.delete, color: Colors.white),
+                          child: Icon(Icons.delete,
+                              color: Theme.of(context).colorScheme.secondary),
                         ),
                         confirmDismiss: (direction) async {
                           if (direction == DismissDirection.endToStart) {
@@ -149,19 +162,26 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
                           return false;
                         },
                         child: CheckboxListTile(
-                          title: Text(checkLists[index]),
+                          title: Text(
+                            checkLists[index],
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
                           value: isChecked[index],
                           onChanged: (bool? value) async {
                             await _updateCheckListStatus(index, value ?? false);
                           },
+                          checkColor: Theme.of(context).colorScheme.onTertiary,
+                          activeColor: Theme.of(context).colorScheme.tertiary,
                         ),
                       );
                     },
                   ),
-                  const Divider(),
-                  const Text(
+                  Divider(
+                    color: Theme.of(context).colorScheme.surfaceContainer,
+                  ),
+                  Text(
                     "완료된 할일",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.labelSmall,
                   ),
                   const SizedBox(height: 8),
                   ListView.builder(
@@ -169,7 +189,10 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: completedCheckLists.length,
                     itemBuilder: (context, index) {
-                      return Text(completedCheckLists[index]);
+                      return Text(
+                        completedCheckLists[index],
+                        style: Theme.of(context).textTheme.labelSmall,
+                      );
                     },
                   ),
                 ],
